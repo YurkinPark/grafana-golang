@@ -3,6 +3,8 @@ package grafana
 import (
 	"fmt"
 	"time"
+
+	"github.com/google/go-querystring/query"
 )
 
 type DashboardsService struct {
@@ -111,8 +113,20 @@ func (s *DashboardsService) DeleteDashboard(uid string) (*Response, error) {
 //https://grafana.com/docs/http_api/folder_dashboard_search/
 //can search by id, uid, title...
 func (s *DashboardsService) SearchDashboardByQuery(query string) (*DashboardSearchResults, *Response, error) {
-	u := fmt.Sprintf("search?query=%s&type=dash-db", query)
+	return s.SearchDashboardsByOptions(SearchOptions{
+		Query: query,
+	})
+}
 
+//https://grafana.com/docs/http_api/folder_dashboard_search/
+//can search by any available property
+func (s *DashboardsService) SearchDashboardsByOptions(props SearchOptions) (*DashboardSearchResults, *Response, error) {
+	props.SearchType = "dash-db"
+	values, err := query.Values(props)
+	if err != nil {
+		return nil, nil, err
+	}
+	u := "search?" + values.Encode()
 	req, err := s.client.NewRequest("GET", u, nil, nil)
 	if err != nil {
 		return nil, nil, err

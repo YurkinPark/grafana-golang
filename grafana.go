@@ -313,3 +313,16 @@ func parseError(raw interface{}) string {
 }
 
 type OptionFunc func(*http.Request) error
+
+type SearchOptions struct {
+	Query         string   `url:"query,omitempty"`
+	Tag           []string `url:"tag,omitempty"`
+	SearchType    string   `url:"type,omitempty"`
+	DashboardIds  []int    `url:"dashboardIds,omitempty"`
+	DashboardUID  string   `url:"dashboardUID,omitempty"`
+	DashboardUIDs []string `url:"dashboardUIDs,omitempty"`
+	FolderIds     []int    `url:"folderIds,omitempty"`
+	Starred       bool     `url:"starred,omitempty"`
+	Limit         int      `url:"limit,omitempty"`
+	Page          int      `url:"page,omitempty"`
+}
